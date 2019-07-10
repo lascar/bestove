@@ -1,0 +1,91 @@
+class ContactFormsController < ApplicationController
+  before_action :authenticate_user!, except: [:new, :create, :search_store]
+  before_action :set_contact_form, only: [:show, :edit, :update, :destroy]
+  before_action :set_stores, only: [:new, :edit, :create, :update]
+
+
+  # GET /contact_forms
+  def index
+    @contact_forms = ContactForm.all
+  end
+
+  # GET /contact_forms/1
+  def show
+    authorize @contact_form
+    if !@contact_form.seen &&
+        (store_signed_in? || @contact_form.store_id.nil?)
+      @contact_form.seen = true
+      @contact_form.save
+    end
+  end
+
+  # GET /contact_forms/new
+  def new
+    @magasin = Store.find(1)
+    @contact_form = ContactForm.new
+  end
+
+  # GET /contact_forms/1/edit
+  def edit
+    authorize @contact_form
+  end
+
+  # POST /contact_forms
+  def create
+    @contact_form = ContactForm.new(contact_form_params)
+
+    if @contact_form.save
+      store_email = @contact_form.store ? @contact_form.store.email : nil
+      ContactFormMailer.with(contact_form: @contact_form,
+                             store_email: store_email,
+                             contact_form_url: contact_form_url(id: @contact_form.id)).
+        contact.deliver_later
+      redirect_to params[:contact_form][:back],
+        notice: I18n.t('controllers.contact_forms.create.successfully')
+    else
+      render :new
+    end
+  end
+
+  # PATCH/PUT /contact_forms/1
+  def update
+    authorize @contact_form
+    if @contact_form.update(contact_form_params)
+      redirect_to @contact_form, notice: I18n.t('controllers.contact_forms.update.successfully')
+    else
+      render :edit
+    end
+  end
+
+  # DELETE /contact_forms/1
+  def destroy
+    @contact_form.destroy
+    redirect_to contact_forms_url, notice: 'Contact form was successfully destroyed.'
+  end
+  # GET /search_store/1
+  def search_store
+    store_id = params[:store_id]
+    if Store.find(store_id)
+      @magasin = {magasin: Store.find(store_id)}
+      respond_to do |format|
+        format.js { render :json => @magasin}
+      end
+    end
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_contact_form
+      @contact_form = ContactForm.includes(:store).find(params[:id])
+    end
+
+    # Only allow a trusted parameter "white list" through.
+    def contact_form_params
+      params.require(:contact_form).permit(:firstname, :lastname, :email, :phone, :store_id, :subject, :message, :seen)
+    end
+
+    def set_stores
+      @stores = Store.all.map{|store| [store.name, store.id]}.
+        insert(0, ['Choisissez un magasin', ''])
+    end
+end

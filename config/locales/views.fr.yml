@@ -1,0 +1,6 @@
+fr:
+  views:
+    contact_forms:
+      form:
+        title: 'Nous contacter'
+        error_count: "erreurs ont empêché cette form d'avoir été envoyée:"

@@ -1,0 +1,12 @@
+class ContactFormMailer < ApplicationMailer
+  def contact
+    contact_form = params[:contact_form]
+    @firstname = contact_form[:firstname]
+    @lastname = contact_form[:lastname]
+    @email = contact_form[:email]
+    @phone = contact_form[:phone]
+    @message = contact_form[:message]
+    @contact_form_url = contact_form_url(id:contact_form.id)
+    mail(to: (params[:store_email] || 'mea@socamaine.fr'), bcc: 'mea@socamaine.fr, frederic.thibault@agence3print.fr, alexandre.rimbaux@socamaine.fr', subject: contact_form[:subject])
+  end
+end

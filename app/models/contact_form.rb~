@@ -1,0 +1,7 @@
+class ContactForm < ApplicationRecord
+  belongs_to :store, optional: true
+
+  def self.store_not_views(store_id)
+    where(store_id: store_id, seen: false)
+  end
+end

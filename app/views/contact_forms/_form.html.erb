@@ -1,0 +1,74 @@
+<div class="content-head">
+  <h2 class="content-head__title">
+    <span><%= t('views.contact_forms.form.title') %></span>
+  </h2>
+</div>
+
+<div class="register-view">
+  <div class="row">
+    <div class="col-sm-8">
+
+      <%= form_with(model: contact_form, local: true, html: { class: "global-form" }) do |form| %>
+        <%= form.hidden_field :back, value: request.referer %>
+        <% if contact_form.errors.any? %>
+          <div id="error_explanation" class="notice alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h2><%= pluralize(contact_form.errors.count, "error") %> <%= t('views.contact_forms.form.error_count') %></h2>
+
+            <ul>
+            <% contact_form.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="global-form__fieldset">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-field">
+                <%= form.label "Prénom", class: "form-field__label" %>
+                <%= form.text_field :firstname, class: 'form-field__text-input', value: current_school ? current_school.contact_firstname : "" %>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-field">
+                <%= form.label "Nom", class: "form-field__label" %>
+                <%= form.text_field :lastname, class: 'form-field__text-input', value: current_school ? current_school.contact_lastname : "" %>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-field">
+                <%= form.label "Email", class: "form-field__label" %>
+                <%= form.text_field :email, class: 'form-field__text-input', value: current_school ? current_school.email : "" %>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-field">
+                <%= form.label "Téléphone", class: "form-field__label" %>
+                <%= form.text_field :phone, class: 'form-field__text-input', value: current_school ? current_school.contact_phone : "" %>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <%= form.label "Sujet", class: "form-field__label" %>
+            <%= form.text_field :subject, class: 'form-field__text-input' %>
+          </div>
+
+          <div class="form-field">
+            <%= form.label "Message", class: "form-field__label" %>
+            <%= form.text_area :message, :rows => 10, class: "contact_form_message" %>
+          </div>
+
+          <div class="actions global-form__actions">
+            <%= form.submit "Envoyer", class: "btn-cta" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+class ContactForms < ActiveRecord::Migration[5.2]
+  def change
+    create_table :contact_forms do |t|
+      t.string :firstname
+      t.string :lastname
+      t.string :email
+      t.string :phone
+      t.string :subject
+      t.text :message
+
+      t.timestamps
+    end
+  end
+end

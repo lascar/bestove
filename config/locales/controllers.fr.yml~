@@ -1,0 +1,6 @@
+fr:
+  controllers:
+    contact_forms:
+      create:
+        successfully: 'Votre message a bien été envoyé.'
+        failed: "Votre message n'a pas pu être envoyé."
